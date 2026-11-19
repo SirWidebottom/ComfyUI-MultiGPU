@@ -540,38 +540,26 @@ def _patch_comfy_kitchen_dlpack_device_guard():
     if getattr(wrap_for_dlpack, "_multigpu_cuda_device_guard", False):
         return True
 
-    from .p2p_registry import p2p_registry
-
     def wrap_for_dlpack_with_device_guard(*args, **kwargs):
         tensor = args[0] if args else kwargs.get("tensor")
         tensor_device = getattr(tensor, "device", None)
-        exec_device = get_current_device()
-        exec_device = _coerce_torch_device(exec_device)
 
-        # Determine if cross-device staging is needed
-        needs_staging = False
-        def _valid_cuda(d):
-            return d is not None and d.type == "cuda" and d.index is not None
+        # DLPack export (and the CUDA kernels it feeds) must run with the
+        # primary context on the tensor's own device. The forward pass for a
+        # model placed on cuda:N sets torch's current device to N, so simply
+        # aligning the context is correct and keeps every operand co-located.
+        # Never stage to another GPU: moving only the weight (e.g. to MultiGPU's
+        # tracked compute device) leaves the input behind and makes the next
+        # F.linear abort natively with a cross-device error.
+        if tensor is not None and getattr(tensor, "is_cuda", False):
+            try:
+                idx = tensor_device.index
+                if idx is not None:
+                    torch.cuda.set_device(idx)
+            except Exception as e:
+                logger.debug(f"[MultiGPU DLPack] device guard set_device failed: {e}")
 
-        if _valid_cuda(tensor_device) and _valid_cuda(exec_device):
-            if tensor_device.index != exec_device.index and not p2p_registry.can_access_peer(tensor_device.index, exec_device.index):
-                needs_staging = True
-
-        if needs_staging:
-            logger.info(
-                f"[MultiGPU DLPack] CPU-staging tensor from cuda:{tensor_device.index} "
-                f"to cuda:{exec_device.index} (P2P unavailable)"
-            )
-            staged_tensor = tensor.to("cpu").to(exec_device)
-            wrap_for_dlpack_with_device_guard._dlpack_staging_count += 1
-            with cuda_device_guard(exec_device, reason="comfy_kitchen._wrap_for_dlpack(staged)"):
-                if args:
-                    return wrap_for_dlpack(staged_tensor, *args[1:], **kwargs)
-                else:
-                    return wrap_for_dlpack(staged_tensor, **kwargs)
-        else:
-            with cuda_device_guard(tensor_device, reason="comfy_kitchen._wrap_for_dlpack"):
-                return wrap_for_dlpack(*args, **kwargs)
+        return wrap_for_dlpack(*args, **kwargs)
 
     wrap_for_dlpack_with_device_guard._multigpu_cuda_device_guard = True
     wrap_for_dlpack_with_device_guard._dlpack_staging_count = 0
