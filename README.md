@@ -1,13 +1,11 @@
-> [!IMPORTANT]
-> **This repository will be archived on 30 September 2026. It is no longer maintained.**
+> [!NOTE]
+> **This is an actively maintained community fork of [pollockjj/ComfyUI-MultiGPU](https://github.com/pollockjj/ComfyUI-MultiGPU) (archived September 2026).**
 >
-> There will be no further code updates or support from the maintainer.
->
-> Fork maintainers can announce themselves in the [pinned coordination issue](https://github.com/pollockjj/ComfyUI-MultiGPU/issues/223). The repository is not being transferred and no fork is endorsed.
+> It tracks the upstream history and adds ongoing compatibility fixes for current ComfyUI builds — including the DisTorch2 low-VRAM fix for ComfyUI ≥ 0.46 and the P2P-aware DLPack device guard that lets the text encoder run on a different GPU than the diffusion model.
 
 # ComfyUI-MultiGPU v2: Universal .safetensors and GGUF Multi-GPU Distribution with DisTorch
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pollockjj/ComfyUI-MultiGPU/main/assets/distorch_average.png" width="600">
+  <img src="https://raw.githubusercontent.com/SirWidebottom/ComfyUI-MultiGPU/main/assets/distorch_average.png" width="600">
   <br>
   <em>Free almost all of your GPU for what matters: Maximum latent space processing</em>
 </p>
@@ -23,7 +21,7 @@
 <h1 align="center">DisTorch: How It Works</h1>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pollockjj/ComfyUI-MultiGPU/main/assets/distorch2_0.gif" width="800">
+  <img src="https://raw.githubusercontent.com/SirWidebottom/ComfyUI-MultiGPU/main/assets/distorch2_0.gif" width="800">
   <br>
   <em>DisTorch 2.0 in Action</em>
 </p>
@@ -51,7 +49,7 @@ What is DisTorch? Standing for "distributed torch", the DisTorch nodes in this c
 - Allows **you** to easily shift from ___on-device speed___ to ___open-device latent space capability___ with a simple one-number change
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pollockjj/ComfyUI-MultiGPU/main/assets/distorch_node.png" width="400">
+  <img src="https://raw.githubusercontent.com/SirWidebottom/ComfyUI-MultiGPU/main/assets/distorch_node.png" width="400">
   <br>
   <em>DisTorch Nodes with one simple number to tune its Vitual VRAM to your needs</em>
 </p>
@@ -64,7 +62,7 @@ On current ComfyUI builds with DynamicVRAM/comfy-aimdo enabled, MultiGPU keeps D
 ⚙️ Expert users: Like .gguf or exl2/3 LLM loaders, use the expert_mode_alloaction for exact allocations of model shards on as many devices as your setup has!
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pollockjj/ComfyUI-MultiGPU/main/assets/distorch2_0.png" width="300">
+  <img src="https://raw.githubusercontent.com/SirWidebottom/ComfyUI-MultiGPU/main/assets/distorch2_0.png" width="300">
   <br>
   <em>The new Virtual VRAM even lets you offload ALL of the model and still run compute on your CUDA device!</em>
 </p>
@@ -75,7 +73,7 @@ Installation via [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) 
 
 ## Manual Installation
 
-Clone [this repository](https://github.com/pollockjj/ComfyUI-MultiGPU) inside `ComfyUI/custom_nodes/`.
+Clone [this repository](https://github.com/SirWidebottom/ComfyUI-MultiGPU) inside `ComfyUI/custom_nodes/`.
 
 ## Nodes
 
@@ -303,10 +301,9 @@ All workflows have been tested on a 2x 3090 + 1060ti linux setup, a 4070 win 11 
 
 ## Support
 
-Maintenance has ended. Until the repository is archived on 30 September 2026, fork maintainers and users can coordinate in the [pinned issue](https://github.com/pollockjj/ComfyUI-MultiGPU/issues/223). Bug reports will not be acted on here. After archiving, the repository remains available to read; future compatibility with ComfyUI, ComfyUI-Manager or other custom nodes is unsupported.
+This fork is maintained by [SirWidebottom](https://github.com/SirWidebottom) and follows the upstream [pollockjj/ComfyUI-MultiGPU](https://github.com/pollockjj/ComfyUI-MultiGPU) history (archived September 2026, still readable). Bug reports and feature requests are welcome in [this repository's issues](https://github.com/SirWidebottom/ComfyUI-MultiGPU/issues).
 
 ## Credits
 
-Maintained by [pollockjj](https://github.com/pollockjj) until September 2026.
-Originally created by [Alexander Dzhoganov](https://github.com/AlexanderDzhoganov).
+Originally created by [Alexander Dzhoganov](https://github.com/AlexanderDzhoganov). Maintained by [pollockjj](https://github.com/pollockjj) until the September 2026 archive. Community fork maintained by [SirWidebottom](https://github.com/SirWidebottom) since November 2026.
 With deepest thanks to [City96](https://v100s.net/).
